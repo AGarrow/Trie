@@ -15,6 +15,7 @@ bedroom
 beeline
 birthday
 blackboard
+book
 bookcase
 booklet
 bookshelf
@@ -68,7 +69,7 @@ fourfold
 friendship
 gentleman
 goldfish
-goldfish
+grand
 grandfather
 grandmother
 grandstand
@@ -91,7 +92,6 @@ honeycomb
 hookworm
 horsefly
 houseboat
-inside
 jawbone
 ladybug
 able
@@ -113,7 +113,6 @@ better
 black
 best
 body
-book
 boy
 brought
 call
@@ -182,7 +181,6 @@ land
 later
 learn
 let
-letter
 life
 light
 live

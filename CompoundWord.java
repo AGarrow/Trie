@@ -14,7 +14,20 @@ public class CompoundWord{
 			dictionary.insert(word);
 		}
 
-		
+		// Iterator i = dictionary.compounds.iterator();
+		// while(i.hasNext()){
+		// 	System.out.print(i.next() + "\n");
+		// }
+
+		// System.out.print("---------");
+
+		// i = dictionary.remainders.iterator();
+		// while(i.hasNext()){
+		// 	System.out.print(i.next() + "\n");
+		// }
+
+		// System.out.print("=========");
+
 		// get the list of compound words
 		Iterator iterator = dictionary.findRemainders().iterator();
 		while(iterator.hasNext()){
@@ -60,7 +73,6 @@ class Trie{
 	public LinkedList<String> findRemainders(){
 		for (int i=0; i<remainders.size(); i++ ) {
 			String word = remainders.get(i);
-			System.out.print(word);
 			if(!findString(word)){
 				compounds.remove(i);
 				remainders.remove(i);
