@@ -3,46 +3,74 @@ public class CompoundWord{
 	
 	public static void main(String[] args){
 		Trie dictionary = new Trie();
+		Map<String, ArrayList<String>> compounds = new HashMap<String, ArrayList<String>>();
+
 
 		// take text/user input until EOF condition
 		// insert each line into the dictionary
 		Scanner scan = new Scanner(System.in);
-		String word = scan.nextLine();
-		dictionary.insert(word);
+		String input_word = scan.nextLine();
+		dictionary.insert(input_word);
+		
 		while(scan.hasNext()){
-			word = scan.nextLine();
-			dictionary.insert(word);
+			input_word = scan.nextLine();
+			ArrayList<String> prefixes = dictionary.get_prefixes(input_word);
+			for(String p: prefixes){
+				ArrayList<String> suffixes = compounds.get(p);
+				if(suffixes == null){
+					suffixes = compounds.put(p, new ArrayList<String>());
+				}  
+				compounds.get(p).add(input_word.replace(p, ""));			
+			}
+			dictionary.insert(input_word);
 		}
 
-		// Iterator i = dictionary.compounds.iterator();
-		// while(i.hasNext()){
-		// 	System.out.print(i.next() + "\n");
-		// }
 
-		// System.out.print("---------");
-
-		// i = dictionary.remainders.iterator();
-		// while(i.hasNext()){
-		// 	System.out.print(i.next() + "\n");
-		// }
-
-		// System.out.print("=========");
-
-		// get the list of compound words
-		Iterator iterator = dictionary.findRemainders().iterator();
-		while(iterator.hasNext()){
-			System.out.print(iterator.next()+"\n");
+		for (Map.Entry<String,ArrayList<String>> entry : compounds.entrySet()) {
+		  String prefix = entry.getKey();
+		  ArrayList<String> suffixes = entry.getValue();
+		  ArrayList<String> verified_compounds = new ArrayList<String>();
+		  for(String s: suffixes){
+		  	if (dictionary.findString(s)){
+		  		verified_compounds.add(prefix + s);
+		  	}
+		  }
+		  if(verified_compounds.size() > 0){
+		  	System.out.println(prefix);
+		  	for(String vc : verified_compounds){
+		  		System.out.println("    "+vc);
+		  	}
+		  }
 		}
 	}
 }
 
 class Trie{
 	Node root;
-	LinkedList <String>compounds = new LinkedList<String>();
-	LinkedList <String>remainders = new LinkedList<String>();
 
 	public Trie(){
 		this.root=new Node(' ');
+	}
+
+	public ArrayList<String> get_prefixes(String word){
+		Node current = this.root;
+		ArrayList<String> prefixes = new ArrayList<String>();
+		String prefix = "";
+
+		for (int i=0;i<word.length()-1;i++){							//iterate through each letter
+			Character letter 		= 	word.charAt(i);
+			prefix += letter;
+			int letterIndex 		= 	current.searchChildren(letter);
+
+			if(letterIndex!=-1){									//if letter is found among current nodes children
+				current = current.children.get(letterIndex);
+				if(current.fullWord){
+					String remainder = word.substring(i+1);
+					prefixes.add(prefix);
+				}
+			}
+		}
+		return prefixes;
 	}
 
 	public void insert(String word){
@@ -53,13 +81,7 @@ class Trie{
 			int letterIndex 		= 	current.searchChildren(letter);
 
 			if(letterIndex!=-1){									//if letter is found among current nodes children
-				Node child = current.children.get(letterIndex);
-				if(child.fullWord){
-					String remainder = word.substring(i+1);
-					compounds.add(word);
-					remainders.add(remainder);
-				}
-				current = child;
+				current = current.children.get(letterIndex);
 			}
 			else{
 				current=current.addChild(letter);
@@ -70,32 +92,17 @@ class Trie{
 		}
 	}
 
-	public LinkedList<String> findRemainders(){
-		for (int i=0; i<remainders.size(); i++ ) {
-			String word = remainders.get(i);
-			if(!findString(word)){
-				compounds.remove(i);
-				remainders.remove(i);
-			}
-		}
-		return compounds;
-	}
-
 	public Boolean findString(String word){
 		Node current = this.root;
-		Boolean found = true;
 		for (int i=0; i<word.length() ; i++) {
 			Character letter 	= 	word.charAt(i);
 			int letterIndex 	= 	current.searchChildren(letter);
 			if(letterIndex!=-1){
-				Node child 		= 	current.children.get(letterIndex);
-				current 		= 	child;				
+				current 		= 	current.children.get(letterIndex);
 			}
-			else{
-				found = false;
-			}	
+			else { return false; }
 		}
-		return found;
+		return current.fullWord;
 	}
 }
 
@@ -132,3 +139,4 @@ class Node{
 		return index;
 	}
 }
+
