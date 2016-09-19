@@ -2,7 +2,10 @@ import java.util.*;
 public class CompoundWord{
 	
 	public static void main(String[] args){
+
 		Trie dictionary = new Trie();
+
+		// Store possible compound words in a hash of { prefix -> [suffixes] }
 		Map<String, ArrayList<String>> compounds = new HashMap<String, ArrayList<String>>();
 
 
@@ -25,16 +28,20 @@ public class CompoundWord{
 			dictionary.insert(input_word);
 		}
 
-
+		// Iterate through all prefix + suffix combinations
 		for (Map.Entry<String,ArrayList<String>> entry : compounds.entrySet()) {
 		  String prefix = entry.getKey();
 		  ArrayList<String> suffixes = entry.getValue();
 		  ArrayList<String> verified_compounds = new ArrayList<String>();
+
+		  // verify suffixes
 		  for(String s: suffixes){
 		  	if (dictionary.findString(s)){
 		  		verified_compounds.add(prefix + s);
 		  	}
 		  }
+
+		  // pretty print
 		  if(verified_compounds.size() > 0){
 		  	System.out.println(prefix);
 		  	for(String vc : verified_compounds){
@@ -76,8 +83,8 @@ class Trie{
 	public void insert(String word){
 		Node current = this.root;
 		for (int i=0;i<word.length();i++){							//iterate through each letter
+
 			Character letter 		= 	word.charAt(i);
-			Boolean found 			= 	false;		
 			int letterIndex 		= 	current.searchChildren(letter);
 
 			if(letterIndex!=-1){									//if letter is found among current nodes children
